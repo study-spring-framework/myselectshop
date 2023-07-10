@@ -64,4 +64,33 @@ public class ProductController {
     ) {
         productService.addFolder(productId,folderId,userDetails.getUser());
     }
+
+    /**
+     * 해당 폴더에 등록이 되어 있는 products들을 조회
+     * @param folderId 폴더 ID 받아오기
+     * @param page 현재페이지
+     * @param size 노출 개수
+     * @param sortBy 정렬방법
+     * @param isAsc 오름차순인가?
+     * @param userDetails 유저정보
+     * @return
+     */
+    @GetMapping("/folders/{folderId}/products")
+    public Page<ProductResponseDto> getProductsInFolder(
+            @PathVariable Long folderId,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return productService.getProductsInFolder(
+                folderId,
+                page-1,
+                size,
+                sortBy,
+                isAsc,
+                userDetails.getUser()
+        );
+    }
 }

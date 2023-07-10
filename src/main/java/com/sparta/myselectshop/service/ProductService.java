@@ -112,4 +112,20 @@ public class ProductService {
         // -> 여기서 끝내면 안 되고 외래키 설정 해줘여 한다(productFolder 인자값으로 product,folder 넣어줘야 함)
         productFolderRepository.save(new ProductFolder(product, folder));
     }
+
+    public Page<ProductResponseDto> getProductsInFolder(Long folderId, int page, int size, String sortBy, boolean isAsc, User user) {
+
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction,sortBy);
+        Pageable pageable = PageRequest.of(page,size,sort);
+
+        // 해당폴더에 등록되어 있는 상품을 가져오기
+        Page<Product> productList = productRepository.findAllByUserAndProductFolderList_FolderId(user, folderId, pageable);
+
+        // Page<Product> productList를 ProductResponseDto로 변환하기!
+        Page<ProductResponseDto> responseDtoList = productList.map(ProductResponseDto::new);
+
+        return responseDtoList;
+
+    }
 }
