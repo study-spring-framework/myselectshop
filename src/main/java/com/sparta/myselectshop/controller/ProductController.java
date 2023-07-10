@@ -3,6 +3,7 @@ package com.sparta.myselectshop.controller;
 import com.sparta.myselectshop.dto.ProductMypriceRequestDto;
 import com.sparta.myselectshop.dto.ProductRequestDto;
 import com.sparta.myselectshop.dto.ProductResponseDto;
+import com.sparta.myselectshop.entity.User;
 import com.sparta.myselectshop.security.UserDetailsImpl;
 import com.sparta.myselectshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,20 @@ public class ProductController {
             @RequestParam("isAsc") boolean isAsc,
             @AuthenticationPrincipal UserDetailsImpl userDetails){
         return productService.getProducts(userDetails.getUser(),page-1,size,sortBy,isAsc);
+    }
+
+    /**
+     * 폴더에 관심 상품을 등록 (ProductController)
+     * @param productId 등록을 할 상품의 ID
+     * @param folderId 추가할 폴더의 ID
+     * @param userDetails 상품의 폴더를 추가 할 떄 해당 상품과 그 해당 폴더가 현재 로그인한 유저의 상품의 폴더가 일치 하는지 확인
+     */
+    @PostMapping("/products/{productId}/folder")
+    public void addFolder(
+            @PathVariable Long productId,
+            @RequestParam Long folderId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        productService.addFolder(productId,folderId,userDetails.getUser());
     }
 }

@@ -32,7 +32,7 @@ public class ProductResponseDto {
         this.myprice = product.getMyprice();
         // 생성자를 통해서 productRsponseDto 만들 떄 pram으로 product를 받아 오는데 ()
         for (ProductFolder productFolder : product.getProductFolderList()) {
-            this.productFolderList.add(new FolderResponseDto(productFolder.getFolder()));
+            productFolderList.add(new FolderResponseDto(productFolder.getFolder()));
         }
     }
 }

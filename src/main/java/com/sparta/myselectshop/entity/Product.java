@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity // JPA가 관리할 수 있는 Entity 클래스 지정
@@ -41,7 +42,11 @@ public class Product extends Timestamped {
     private User user;
 
     @OneToMany(mappedBy = "product")
-    private List<ProductFolder> productFolderList;
+    private List<ProductFolder> productFolderList = new ArrayList<>();
+
+    public void update(ProductMypriceRequestDto requestDto) {
+        this.myprice = requestDto.getMyprice();
+    }
 
     public Product(ProductRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
@@ -49,10 +54,6 @@ public class Product extends Timestamped {
         this.link = requestDto.getLink();
         this.lprice = requestDto.getLprice();
         this.user = user;
-    }
-
-    public void update(ProductMypriceRequestDto requestDto) {
-        this.myprice = requestDto.getMyprice();
     }
 
     public void updateByItemDto(ItemDto itemDto) {

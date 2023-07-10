@@ -363,14 +363,14 @@ function addInputForProductToFolder(productId, button) {
                     data: $(this).serialize(),
                 }).done(function (data, textStatus, xhr) {
                     if(data !== '') {
-                        alert("중복된 폴더입니다.");
+                        alert("중복된 폴더입니다1.");
                         return;
                     }
                     alert('성공적으로 등록되었습니다.');
                     window.location.reload();
                 })
                     .fail(function(xhr, textStatus, errorThrown) {
-                        alert("중복된 폴더입니다.");
+                        alert("중복된 폴더입니다2.");
                     });
             });
         },
