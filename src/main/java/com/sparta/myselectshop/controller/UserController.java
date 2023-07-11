@@ -1,11 +1,16 @@
 package com.sparta.myselectshop.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.myselectshop.dto.SignupRequestDto;
 import com.sparta.myselectshop.dto.UserInfoDto;
 import com.sparta.myselectshop.entity.UserRoleEnum;
+import com.sparta.myselectshop.jwt.JwtUtil;
 import com.sparta.myselectshop.security.UserDetailsImpl;
 import com.sparta.myselectshop.service.FolderService;
+import com.sparta.myselectshop.service.KakaoService;
 import com.sparta.myselectshop.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class UserController {
 
     private final UserService userService;
     private final FolderService folderService;
+    private final KakaoService kakaoService;
 
     @GetMapping("/user/login-page")
     public String loginPage() {
@@ -76,5 +79,26 @@ public class UserController {
         return "index :: #fragment";
     }
 
+
+    /**
+     * 카카오 서버에서 인가코드 받기
+     * @param code 카카오 서버에서 넘어오는 인가 코드
+     * @param response JWT를 생성해서 쿠키에 넣어서 브라우저로 응답 넘기기
+     * @return 이동할 페이지
+     */
+    @GetMapping("/user/kakao/callback")
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        String token = kakaoService.kakaoLogin(code);
+
+        // 쿠키에 넣어주는 작업
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token);
+        cookie.setPath("/");
+
+        response.addCookie(cookie); // response 객체에 넣기
+
+        return "redirect:/";
+    }
+    // 쿠키를 이용하면 서버는 브라우저에 데이터를 넣을수 있다(유저의 관한 것을 기억하기 위해서
+    // 쿠키를 저장 한 후 해당 웹사이트에 방문 할 떄 마다 브라우저는 해당 쿠키도 요청과 함께 보냄
 
 }
